@@ -8,10 +8,9 @@ export default function setup(p5: P5) {
   window.addEventListener("resize", () => {
     p5.resizeCanvas(window.innerWidth, window.innerHeight);
   });
-  p5.background(0);
-  p5.noStroke();
+  p5.stroke(255);
   p5.fill(255);
-  p5.rect(100, 100, 100, 100);
+  // p5.angleMode(p5.DEGREES);
   world = new World(p5);
   world.run();
 }
