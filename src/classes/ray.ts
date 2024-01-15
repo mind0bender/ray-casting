@@ -11,13 +11,13 @@ export interface RayOptions {
 }
 
 export default class Ray {
-  private p5: P5;
+  private _p5: P5;
   private player: Player;
   private direction: Vector;
   private world: World;
   constructor(p5: P5, { world, player, direction }: RayOptions) {
     this.world = world;
-    this.p5 = p5;
+    this.p5 = _p5;
     this.player = player;
     this.direction = direction.normalize().mult(this.player.getMass() * 2);
   }
