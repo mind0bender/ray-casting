@@ -1,4 +1,5 @@
 import P5, { Vector } from "p5";
+import { Line } from "../helpers/line";
 
 export interface WallOptions {
   pos1: Vector;
@@ -34,17 +35,23 @@ export function getBoundaryWalls(p5: P5) {
 }
 
 export default class Wall {
-  p5: P5;
-  pos1: Vector;
-  pos2: Vector;
+  private p5: P5;
+  private start: Vector;
+  private end: Vector;
   constructor(p5: P5, { pos1, pos2 }: WallOptions) {
     this.p5 = p5;
-    this.pos1 = pos1;
-    this.pos2 = pos2;
+    this.start = pos1;
+    this.end = pos2;
   }
   show() {
-    this.p5.stroke(150);
     this.p5.strokeWeight(2);
-    this.p5.line(this.pos1.x, this.pos1.y, this.pos2.x, this.pos2.y);
+    this.p5.stroke(150);
+    this.p5.line(this.start.x, this.start.y, this.end.x, this.end.y);
+  }
+  getLine(): Line {
+    return {
+      start: this.start,
+      end: this.end,
+    };
   }
 }

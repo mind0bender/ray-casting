@@ -1,5 +1,6 @@
 import P5, { Vector } from "p5";
 import Ray from "./ray";
+import World from "./world";
 
 export default class Player {
   private p5: P5;
@@ -8,16 +9,20 @@ export default class Player {
   private mass: number;
   private frictionCoeff: number;
   private rays: Ray[];
+  private world: World;
 
   constructor(
     p5: P5,
     {
       frictionCoeff,
+      world,
     }: {
       frictionCoeff: number;
+      world: World;
     }
   ) {
     this.p5 = p5;
+    this.world = world;
     this.pos = this.p5.createVector(
       p5.random(0, p5.width),
       p5.random(0, p5.height)
@@ -27,9 +32,10 @@ export default class Player {
     this.frictionCoeff = frictionCoeff;
     this.mass = 20;
     this.rays = [];
-    for (let a = 0; a < 360; a += 10) {
+    for (let a = 0; a < 360; a += 0.05) {
       const direction: Vector = Vector.fromAngle((a * this.p5.TWO_PI) / 360);
       const ray = new Ray(p5, {
+        world: this.world,
         player: this,
         direction,
       });
@@ -37,11 +43,25 @@ export default class Player {
     }
   }
   show() {
-    this.p5.fill(255);
+    this.p5.fill(0);
     this.p5.stroke(255);
-    this.p5.circle(this.pos.x, this.pos.y, (this.mass * 2) / 3);
+    this.p5.circle(this.pos.x, this.pos.y, this.mass / 2);
     // this.p5.line(this.pos.x, this.pos.y, this.p5.mouseX, this.p5.mouseY);
-    this.rays.forEach((ray: Ray) => ray.show());
+  }
+  detectCollision() {
+    this.rays.forEach((ray: Ray) => {
+      const nearestCollision: Vector | null = ray.collidesAt();
+      if (nearestCollision) {
+        this.p5.strokeWeight(1);
+        this.p5.stroke(255);
+        this.p5.line(
+          this.pos.x,
+          this.pos.y,
+          nearestCollision.x,
+          nearestCollision.y
+        );
+      }
+    });
   }
   update() {
     this.pos.add(this.vel);
@@ -51,6 +71,7 @@ export default class Player {
     this.vel.limit(this.mass);
     this.vel.mult(this.frictionCoeff);
   }
+
   getMass() {
     return this.mass;
   }

@@ -6,7 +6,7 @@ export default class World {
   private p5: P5;
   public isPaused: boolean;
   private player: Player;
-  private frictionCoeff = 0.95;
+  private frictionCoeff = 0.99 || 0.95;
   private walls: Wall[];
 
   constructor(p5: P5) {
@@ -14,6 +14,7 @@ export default class World {
     this.isPaused = true;
     this.player = new Player(this.p5, {
       frictionCoeff: this.frictionCoeff,
+      world: this,
     });
     this.walls = [...getBoundaryWalls(this.p5)];
     for (let i = 0; i < 5; i++) {
@@ -22,27 +23,31 @@ export default class World {
     }
   }
 
-  run() {
+  run(): void {
     this.isPaused = false;
   }
 
-  update() {
+  update(): void {
     if (this.isPaused) return;
     this.player.update();
   }
-  show() {
-    this.p5.background(0);
+  show(): void {
     this.player.show();
     this.walls.forEach((wall: Wall) => wall.show());
   }
-  movePlayer() {
+  detectCollision() {
+    this.player.detectCollision();
+  }
+  movePlayer(): void {
     const mousePos = this.p5.createVector(this.p5.mouseX, this.p5.mouseY);
-
     if (mousePos.mag()) {
       this.player.move(mousePos.sub(this.player.pos));
     }
   }
-  stop() {
+  stop(): void {
     this.isPaused = true;
+  }
+  getWalls(): Wall[] {
+    return this.walls;
   }
 }
