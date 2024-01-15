@@ -32,7 +32,7 @@ export default class Player {
     this.frictionCoeff = frictionCoeff;
     this.mass = 20;
     this.rays = [];
-    for (let a = 0; a < 360; a += 0.05) {
+    for (let a = 0; a < 360; a += 3) {
       const direction: Vector = Vector.fromAngle((a * this.p5.TWO_PI) / 360);
       const ray = new Ray(p5, {
         world: this.world,
