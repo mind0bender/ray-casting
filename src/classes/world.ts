@@ -6,16 +6,22 @@ export default class World {
   private p5: P5;
   public isPaused: boolean;
   private player: Player;
-  private frictionCoeff = 0.99 || 0.95;
+  private frictionCoeff = 0.9;
   private walls: Wall[];
+  private high: boolean;
 
-  constructor(p5: P5) {
+  constructor(p5: P5, high: boolean = false) {
     this.p5 = p5;
     this.isPaused = true;
-    this.player = new Player(this.p5, {
-      frictionCoeff: this.frictionCoeff,
-      world: this,
-    });
+    this.high = high;
+    this.player = new Player(
+      this.p5,
+      {
+        frictionCoeff: this.frictionCoeff,
+        world: this,
+      },
+      this.high
+    );
     this.walls = [...getBoundaryWalls(this.p5)];
     for (let i = 0; i < 5; i++) {
       const wall = new Wall(this.p5, getRandomWallOptions(this.p5));
@@ -26,7 +32,6 @@ export default class World {
   run(): void {
     this.isPaused = false;
   }
-
   update(): void {
     if (this.isPaused) return;
     this.player.update();

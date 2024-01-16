@@ -4,6 +4,7 @@ import { Line } from "../helpers/line";
 export interface WallOptions {
   pos1: Vector;
   pos2: Vector;
+  reflectionCoeff?: number;
 }
 
 export function getRandomWallOptions(p5: P5): WallOptions {
@@ -38,14 +39,16 @@ export default class Wall {
   private p5: P5;
   private start: Vector;
   private end: Vector;
-  constructor(p5: P5, { pos1, pos2 }: WallOptions) {
+  private reflectionCoeff: number;
+  constructor(p5: P5, { pos1, pos2, reflectionCoeff = 0.7 }: WallOptions) {
     this.p5 = p5;
     this.start = pos1;
     this.end = pos2;
+    this.reflectionCoeff = reflectionCoeff;
   }
   show() {
     this.p5.strokeWeight(2);
-    this.p5.stroke(150);
+    this.p5.stroke(255, 0, 0);
     this.p5.line(this.start.x, this.start.y, this.end.x, this.end.y);
   }
   getLine(): Line {
@@ -53,5 +56,17 @@ export default class Wall {
       start: this.start,
       end: this.end,
     };
+  }
+  getNormal(): Vector {
+    const line = this.getLine();
+    const normal = line.end
+      .copy()
+      .sub(line.start)
+      .normalize()
+      .rotate(this.p5.HALF_PI);
+    return normal;
+  }
+  getReflectionCoeff(): number {
+    return this.reflectionCoeff;
   }
 }
